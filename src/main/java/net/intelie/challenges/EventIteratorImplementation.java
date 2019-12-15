@@ -7,6 +7,7 @@ public class EventIteratorImplementation implements EventIterator {
     private final ConcurrentNavigableMap<Long, Event> subMap;
     private final Iterator<Long> keySetIterator;
     private Long currentKey = null;
+    private boolean isClosed = false;
 
     public EventIteratorImplementation(ConcurrentNavigableMap<Long, Event> subMap) {
         this.subMap = subMap;
@@ -27,7 +28,7 @@ public class EventIteratorImplementation implements EventIterator {
      */
     @Override
     public boolean moveNext() {
-        if (subMap == null || keySetIterator == null)
+        if (isClosed || isEmpty())
             return false;
         if (keySetIterator.hasNext()) {
             currentKey = keySetIterator.next();
@@ -36,6 +37,10 @@ public class EventIteratorImplementation implements EventIterator {
             currentKey = null;
             return false;
         }
+    }
+
+    private boolean isEmpty() {
+        return subMap == null || keySetIterator == null;
     }
 
     /**
@@ -66,11 +71,15 @@ public class EventIteratorImplementation implements EventIterator {
     }
 
     private boolean isInvalidState() {
-        return subMap == null || keySetIterator == null || currentKey == null;
+        return isClosed || isEmpty() || noFetchedEvent();
+    }
+
+    private boolean noFetchedEvent() {
+        return currentKey == null;
     }
 
     @Override
     public void close() throws Exception {
-        // nothing to do here.
+        isClosed = true;
     }
 }

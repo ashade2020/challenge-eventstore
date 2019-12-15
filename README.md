@@ -1,5 +1,15 @@
 # Implement EventStore
 
+## Solution
+SCROLL DOWN TO SEE ORIGINAL STATEMENT OF THE PROBLEM.
+
+All the coe was implemented using IntelliJ Idea (https://www.jetbrains.com/idea/) and Open JDK 11. Please take a look at
+the class EventStoreImplementation for more details.
+
+To run the code, just execute all the tests under the src/test directory. Hopefully you guys will like it ;) 
+
+################### ORIGINAL STATEMENT #########################
+
 In this challenge, you will create a class that implements the `EventStore` 
 interface.
  

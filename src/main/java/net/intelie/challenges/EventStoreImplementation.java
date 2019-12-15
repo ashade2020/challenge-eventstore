@@ -1,15 +1,20 @@
 package net.intelie.challenges;
 
-import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 
 public class EventStoreImplementation implements EventStore {
 
     /**
-     * internal event storage. All major operations (insert, delete, contains and size) are O(1). Moreover, the
-     * Collections.synchronizedSet(.) statement guarantees thread safety, according to
-     * https://docs.oracle.com/javase/7/docs/api/java/util/HashSet.html
+     * internal event storage. All major operations (insert, delete, contains and size) are O(1) on HashMap and O(lg n)
+     * on ConcurrentSkipListMap. Moreover, ConcurrentSkipListMap supports range queries in O(lg n), where n is the size
+     * of the collection. Both ConcurrentHashMap and ConcurrentSkipListMap are thread-safe.
+     *
+     * The implementation assumes that two events may have the same timestamp if, and only if, they have different types.
+     * If a new event is inserted and there exists another event of the same type and with same timestamp, then the
+     * new event is ignored (not inserted).
+     *
+     * Please take a look at test codes within the test folder for more details on the requirements and implemented behaviours.
      */
     private final ConcurrentHashMap<String, ConcurrentSkipListMap<Long, Event>> events = new ConcurrentHashMap<>();
 
